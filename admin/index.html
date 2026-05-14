@@ -595,7 +595,7 @@
     <div class="chip" onclick="suggest(this)">📋 Voir tout l'inventaire</div>
     <div class="chip" onclick="suggest(this)">💰 Modifier un prix</div>
     <div class="chip" onclick="suggest(this)">✅ Marquer comme vendue</div>
-    <div class="chip" onclick="suggest(this)">➕ Ajouter une voiture</div>
+    <div class="chip" onclick="openModal()">➕ Ajouter une voiture</div>
   </div>
 
   <div class="input-bar">
@@ -723,6 +723,72 @@
     const el = document.getElementById(id);
     if (el) el.remove();
   }
+function openModal() {
+    document.getElementById("modalOverlay").classList.add("open");
+}
+
+function closeModal() {
+    document.getElementById("modalOverlay").classList.remove("open");
+    document.getElementById("successMsg").style.display = "none";
+    // Reset form
+    ["f_marque","f_modele","f_annee","f_couleur","f_carburant",
+    "f_boite","f_km","f_prix","f_puissance","f_proprio","f_description"]
+    .forEach(id => document.getElementById(id).value = "");
+}
+
+async function submitVoiture() {
+    const marque      = document.getElementById("f_marque").value.trim();
+    const modele      = document.getElementById("f_modele").value.trim();
+    const annee       = document.getElementById("f_annee").value;
+    const couleur     = document.getElementById("f_couleur").value.trim();
+    const carburant   = document.getElementById("f_carburant").value;
+    const boite       = document.getElementById("f_boite").value;
+    const km          = document.getElementById("f_km").value;
+    const prix        = document.getElementById("f_prix").value;
+    const puissance   = document.getElementById("f_puissance").value;
+    const proprio     = document.getElementById("f_proprio").value;
+    const description = document.getElementById("f_description").value.trim();
+
+    if (!marque || !modele || !annee || !couleur || !carburant || !boite || !km || !prix || !puissance || !proprio || !description) {
+        alert("Veuillez remplir tous les champs !");
+        return;
+    }
+
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").textContent = "Ajout en cours...";
+
+      try {
+        const res = await fetch("https://garage-mcp.onrender.com/voitures/ajouter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: currentUser,
+            pin: "1234",
+            marque, modele,
+            annee: parseInt(annee),
+            couleur, carburant,
+            boite_vitesse: boite,
+            kilometrage: parseInt(km),
+            prix: parseFloat(prix),
+            puissance_cv: parseInt(puissance),
+            nb_proprietaires: parseInt(proprio),
+            description
+          })
+        });
+
+        const data = await res.json();
+        if (data.succes) {
+          document.getElementById("successMsg").style.display = "block";
+          setTimeout(() => closeModal(), 2000);
+          addMsg("✅ Nouvelle voiture ajoutée avec succès dans l'inventaire !", "bot");
+        }
+      } catch {
+        alert("❌ Erreur lors de l'ajout");
+      }
+
+      document.getElementById("submitBtn").disabled = false;
+      document.getElementById("submitBtn").textContent = "Ajouter la voiture";
+    }
 </script>
 <!-- MODAL AJOUT VOITURE -->
 <div class="modal-overlay" id="modalOverlay">
