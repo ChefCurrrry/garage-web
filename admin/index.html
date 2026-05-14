@@ -512,15 +512,15 @@
       }
   }
 
-  function logout() {
-    currentUser = null;
-    sessionId   = "admin_" + Math.random().toString(36).substring(2, 10);
-    document.getElementById("loginScreen").style.display = "flex";
-    document.getElementById("chatScreen").style.display  = "none";
-    document.getElementById("pin").value                 = "";
-    document.getElementById("errorMsg").style.display    = "none";
-    document.getElementById("chat").innerHTML            = "";
-  }
+    function logout() {
+        currentUser = null;
+        sessionId   = "admin_" + Math.random().toString(36).substring(2, 10);
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("chatScreen").style.display  = "none";
+        document.getElementById("pin").value                 = "";
+        document.getElementById("errorMsg").style.display    = "none";
+        document.getElementById("chat").innerHTML            = "";
+    }
 
   function loginKey(e) { if (e.key === "Enter") login(); }
   function msgKey(e)   { if (e.key === "Enter") send(); }
