@@ -514,7 +514,7 @@
 
   function logout() {
     currentUser = null;
-    sessionId   = Math.random().toString(36).substring(2, 10);
+    sessionId   = "admin_" + Math.random().toString(36).substring(2, 10);
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("chatScreen").style.display  = "none";
     document.getElementById("pin").value                 = "";
