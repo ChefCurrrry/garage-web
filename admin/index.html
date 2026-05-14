@@ -672,7 +672,10 @@
     try {
       const res = await fetch(WEBHOOK_ADMIN, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true"
+          },
         body: JSON.stringify({ message: msg, sessionId, username: currentUser })
       });
       const data = await res.json();
