@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoGarage — Administration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #222222;
+      --accent: #ff6b35;
+      --accent2: #e8ff47;
+      --text: #f0f0f0;
+      --muted: #666666;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* LOGIN */
+    .login-screen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      position: relative;
+    }
+
+    .login-screen::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #ff6b3515 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo {
+      width: 52px;
+      height: 52px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 24px;
+    }
+
+    .login-box h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-box .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .field input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus { border-color: var(--accent); }
+
+    .login-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .login-btn:hover { background: #e55a25; transform: translateY(-1px); }
+    .login-btn:active { transform: translateY(0); }
+
+    .error {
+      color: #ef4444;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 14px;
+      display: none;
+      padding: 10px;
+      background: #ef444410;
+      border-radius: 8px;
+      border: 1px solid #ef444430;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    /* CHAT ADMIN */
+    .chat-screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand span { color: var(--accent); }
+
+    .admin-badge {
+      background: #ff6b3520;
+      color: var(--accent);
+      border: 1px solid #ff6b3540;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .user-info {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+    .chat-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      display: flex;
+      gap: 12px;
+      max-width: 720px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .msg.bot .avatar {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .msg.user .avatar {
+      background: var(--accent);
+      font-size: 13px;
+    }
+
+    .bubble {
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .msg.bot .bubble {
+      background: #141414;
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+    }
+
+    .msg.user .bubble {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+      border-top-right-radius: 4px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 4px 0;
+    }
+
+    .typing-indicator span {
+      width: 7px;
+      height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.3s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 32px 16px;
+      flex-shrink: 0;
+    }
+
+    .chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: #ff6b3510;
+    }
+
+    .input-bar {
+      padding: 16px 32px 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .input-wrap {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrap:focus-within { border-color: var(--accent); }
+
+    input[type="text"] {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 14px 0;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+
+    input[type="text"]::placeholder { color: var(--muted); }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover { background: #e55a25; transform: scale(1.05); }
+    .send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+
+    .send-btn svg { width: 20px; height: 20px; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">⚙️</div>
+    <h2>Espace Administration</h2>
+    <p class="subtitle">Connectez-vous pour gérer l'inventaire</p>
+
+    <div class="field">
+      <label>Identifiant</label>
+      <input type="text" id="username" placeholder="admin" onkeypress="loginKey(event)" autocomplete="username">
+    </div>
+
+    <div class="field">
+      <label>Code PIN</label>
+      <input type="password" id="pin" placeholder="••••" maxlength="4" onkeypress="loginKey(event)" autocomplete="current-password">
+    </div>
+
+    <button class="login-btn" onclick="login()">Se connecter →</button>
+    <div class="error" id="errorMsg">❌ Identifiant ou PIN incorrect</div>
+    <a href="/" class="back-link">← Retour au site client</a>
+  </div>
+</div>
+
+<!-- CHAT ADMIN -->
+<div class="chat-screen" id="chatScreen">
+  <header>
+    <div class="logo-mark">⚙️</div>
+    <div class="brand">Auto<span>Garage</span></div>
+    <div class="admin-badge">👑 Admin</div>
+    <div class="user-info">
+      <span id="adminLabel">admin</span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <div class="chat-wrap" id="chat">
+    <div class="msg bot">
+      <div class="avatar">🤖</div>
+      <div class="bubble">
+        Bonjour ! Vous êtes connecté en tant qu'<strong>administrateur</strong>. 👑<br><br>
+        Je peux vous aider à gérer l'inventaire :<br>
+        • 📋 Consulter toutes les voitures<br>
+        • 💰 Modifier les prix<br>
+        • ✅ Marquer une voiture comme vendue<br>
+        • ➕ Ajouter un nouveau véhicule<br><br>
+        Que souhaitez-vous faire ?
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <div class="chip" onclick="suggest(this)">📋 Voir tout l'inventaire</div>
+    <div class="chip" onclick="suggest(this)">💰 Modifier un prix</div>
+    <div class="chip" onclick="suggest(this)">✅ Marquer comme vendue</div>
+    <div class="chip" onclick="suggest(this)">➕ Ajouter une voiture</div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-wrap">
+      <input type="text" id="msgInput" placeholder="Donnez une instruction..." onkeypress="msgKey(event)">
+    </div>
+    <button class="send-btn" onclick="send()" id="btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const WEBHOOK_ADMIN = "http://localhost:5678/webhook/garage-admin";
+  const SUPABASE_URL  = "https://opkyovczejghhufxbisu.supabase.co";
+  const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wa3lvdmN6ZWpnaGh1ZnhiaXN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NTM1MjEsImV4cCI6MjA5NDIyOTUyMX0.M21-5pm1xYdxQFqSk77rVIl2zfGSGoZNvFyibg2w9S8";
+
+  let sessionId   = Math.random().toString(36).substring(2, 10);
+  let currentUser = null;
+
+  async function login() {
+      const username = document.getElementById("username").value.trim();
+      const pin      = document.getElementById("pin").value.trim();
+      if (!username || !pin) return;
+
+      try {
+          const res = await fetch("https://garage-mcp-production.up.railway.app/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, pin })
+        });
+        const data = await res.json();
+
+        if (data.succes) {
+          currentUser = username;
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("chatScreen").style.display  = "flex";
+          document.getElementById("adminLabel").textContent    = username;
+        } else {
+          document.getElementById("errorMsg").style.display = "block";
+        }
+      } catch {
+        document.getElementById("errorMsg").style.display = "block";
+      }
+  }
+
+  function logout() {
+    currentUser = null;
+    sessionId   = Math.random().toString(36).substring(2, 10);
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("chatScreen").style.display  = "none";
+    document.getElementById("pin").value                 = "";
+    document.getElementById("errorMsg").style.display    = "none";
+    document.getElementById("chat").innerHTML            = "";
+  }
+
+  function loginKey(e) { if (e.key === "Enter") login(); }
+  function msgKey(e)   { if (e.key === "Enter") send(); }
+
+  async function send() {
+    const input = document.getElementById("msgInput");
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    addMsg(msg, "user");
+    input.value = "";
+    document.getElementById("btn").disabled = true;
+
+    const typingId = addTyping();
+
+    try {
+      const res = await fetch(WEBHOOK_ADMIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, sessionId, username: currentUser })
+      });
+      const data = await res.json();
+      removeTyping(typingId);
+      addMsg(data.output || "Désolé, je n'ai pas pu répondre.", "bot");
+    } catch {
+      removeTyping(typingId);
+      addMsg("❌ Erreur de connexion.", "bot");
+    }
+
+    document.getElementById("btn").disabled = false;
+    document.getElementById("msgInput").focus();
+  }
+
+  function suggest(el) {
+    document.getElementById("msgInput").value = el.textContent.trim().replace(/^.\s/, "");
+    send();
+  }
+
+  function addMsg(text, type) {
+    const chat = document.getElementById("chat");
+    const div  = document.createElement("div");
+    div.className = `msg ${type}`;
+    div.innerHTML = `
+      <div class="avatar">${type === "bot" ? "🤖" : "👤"}</div>
+      <div class="bubble">${text.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}</div>
+    `;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function addTyping() {
+    const chat = document.getElementById("chat");
+    const id   = "t" + Date.now();
+    const div  = document.createElement("div");
+    div.className = "msg bot";
+    div.id = id;
+    div.innerHTML = `
+      <div class="avatar">🤖</div>
+      <div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>
+    `;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return id;
+  }
+
+  function removeTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+</script>
+</body>
+</html>
