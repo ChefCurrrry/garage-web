@@ -404,6 +404,139 @@
     .send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
 
     .send-btn svg { width: 20px; height: 20px; }
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: #00000090;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 520px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group select option {
+      background: var(--surface2);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .modal-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .modal-cancel:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .modal-submit {
+      flex: 2;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .modal-submit:hover { background: #e55a25; }
+    .modal-submit:disabled { background: var(--border); cursor: not-allowed; }
+
+    .success-msg {
+      color: #22c55e;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 12px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -591,5 +724,72 @@
     if (el) el.remove();
   }
 </script>
+<!-- MODAL AJOUT VOITURE -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>➕ Ajouter une voiture</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Marque *</label>
+        <input type="text" id="f_marque" placeholder="Renault">
+      </div>
+      <div class="form-group">
+        <label>Modèle *</label>
+        <input type="text" id="f_modele" placeholder="Clio">
+      </div>
+      <div class="form-group">
+        <label>Année *</label>
+        <input type="number" id="f_annee" placeholder="2021" min="1990" max="2026">
+      </div>
+      <div class="form-group">
+        <label>Couleur *</label>
+        <input type="text" id="f_couleur" placeholder="Gris Métallisé">
+      </div>
+      <div class="form-group">
+        <label>Carburant *</label>
+        <select id="f_carburant">
+          <option value="">Choisir...</option>
+          <option>Essence</option>
+          <option>Diesel</option>
+          <option>Hybride</option>
+          <option>Électrique</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Boîte de vitesse *</label>
+        <select id="f_boite">
+          <option value="">Choisir...</option>
+          <option>Manuelle</option>
+          <option>Automatique</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Kilométrage *</label>
+        <input type="number" id="f_km" placeholder="45000">
+      </div>
+      <div class="form-group">
+        <label>Prix (€) *</label>
+        <input type="number" id="f_prix" placeholder="15000">
+      </div>
+      <div class="form-group">
+        <label>Puissance (CV) *</label>
+        <input type="number" id="f_puissance" placeholder="110">
+      </div>
+      <div class="form-group">
+        <label>Nb propriétaires *</label>
+        <input type="number" id="f_proprio" placeholder="1" min="1">
+      </div>
+      <div class="form-group full">
+        <label>Description *</label>
+        <textarea id="f_description" placeholder="État général, équipements, historique..."></textarea>
+      </div>
+    </div>
+    <p class="success-msg" id="successMsg">✅ Voiture ajoutée avec succès !</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Annuler</button>
+      <button class="modal-submit" onclick="submitVoiture()" id="submitBtn">Ajouter la voiture</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
