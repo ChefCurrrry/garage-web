@@ -492,7 +492,7 @@
       if (!username || !pin) return;
 
       try {
-          const res = await fetch("https://garage-mcp-production.up.railway.app/auth/login", {
+          const res = await fetch("https://garage-mcp.onrender.com/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, pin })
